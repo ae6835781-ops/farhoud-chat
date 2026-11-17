@@ -1,0 +1,385 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Farhoud Chat</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%236366F1'/%3E%3Cpath d='M22 18h23v8H31v6h12v8H31v14h-9z' fill='white'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#0a0e1a;--panel:#111827;--panel2:#1f2937;--elev:#253049;--accent:#6366f1;--accent2:#a855f7;--text:#f3f4f6;--muted:#9ca3af;--border:#374151;--success:#10b981;--danger:#ef4444;--warn:#f59e0b;--grad:linear-gradient(135deg,var(--accent),var(--accent2));--shadow:0 20px 60px rgba(0,0,0,.5);--tr:.2s cubic-bezier(.4,0,.2,1)}
+html[data-theme=light]{--bg:#f8fafc;--panel:#fff;--panel2:#f1f5f9;--elev:#fff;--text:#0f172a;--muted:#64748b;--border:#e2e8f0;--shadow:0 20px 60px rgba(15,23,42,.1)}
+body{font-family:'Tajawal','Inter',sans-serif;background:var(--bg);color:var(--text);height:100dvh;overflow:hidden;transition:var(--tr)}
+html[dir=ltr] body{font-family:'Inter','Tajawal',sans-serif}
+.hidden{display:none!important}
+button,input{font:inherit;color:inherit}
+button{cursor:pointer;border:0;background:none}
+input:focus{outline:none}
+::-webkit-scrollbar{width:8px}::-webkit-scrollbar-thumb{background:var(--border);border-radius:20px}
+.auth{position:fixed;inset:0;display:grid;place-items:center;padding:20px;background:radial-gradient(900px 500px at 15% 10%,rgba(99,102,241,.3),transparent 60%),radial-gradient(800px 500px at 85% 90%,rgba(168,85,247,.25),transparent 60%),var(--bg)}
+.auth-card{width:min(440px,100%);background:color-mix(in srgb,var(--panel) 92%,transparent);backdrop-filter:blur(20px);border:1px solid var(--border);border-radius:24px;padding:36px 32px;box-shadow:var(--shadow);animation:pop .5s cubic-bezier(.2,.9,.3,1.2)}
+@keyframes pop{from{opacity:0;transform:translateY(20px) scale(.96)}}
+.logo{width:64px;height:64px;border-radius:18px;background:var(--grad);display:grid;place-items:center;font-weight:800;font-size:30px;color:#fff;box-shadow:0 10px 30px rgba(99,102,241,.5);margin-bottom:16px}
+.brand h1{font-size:26px;letter-spacing:-.5px}
+.brand p{color:var(--muted);font-size:13px;margin-top:4px}
+.lang-switch{position:absolute;top:20px;inset-inline-end:20px;display:flex;gap:8px;align-items:center}
+.lang-btn{padding:8px 14px;border-radius:10px;background:var(--panel);border:1px solid var(--border);font-size:13px;font-weight:600;transition:var(--tr)}
+.lang-btn:hover{background:var(--panel2)}.lang-btn.active{background:var(--grad);color:#fff;border-color:transparent}
+.theme-btn{width:38px;height:38px;border-radius:10px;background:var(--panel);border:1px solid var(--border);display:grid;place-items:center;font-size:16px;transition:var(--tr)}
+.theme-btn:hover{background:var(--panel2)}
+.field{margin-top:18px}
+.label{font-size:12px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.8px;margin-bottom:8px;display:block}
+.input{width:100%;padding:14px 16px;border-radius:12px;background:var(--panel2);border:2px solid var(--border);font-size:15px;transition:var(--tr)}
+.input:focus{border-color:var(--accent);box-shadow:0 0 0 4px color-mix(in srgb,var(--accent) 20%,transparent)}
+.btn{padding:14px 20px;border-radius:12px;font-weight:700;background:var(--grad);color:#fff;width:100%;margin-top:20px;box-shadow:0 10px 24px rgba(99,102,241,.4);transition:var(--tr);font-size:15px}
+.btn:hover{transform:translateY(-2px);filter:brightness(1.1)}
+.btn:disabled{opacity:.6;transform:none;cursor:not-allowed}
+.btn.danger{background:linear-gradient(135deg,var(--danger),#b91c1c);box-shadow:none}
+.error{color:var(--danger);font-size:13px;margin-top:12px;min-height:20px;text-align:center;font-weight:600}
+.switch-link{text-align:center;margin-top:20px;font-size:14px;color:var(--muted)}
+.switch-link a{color:var(--accent);font-weight:600;cursor:pointer}.switch-link a:hover{text-decoration:underline}
+.mode-badge{display:inline-block;padding:5px 12px;border-radius:20px;font-size:11px;font-weight:700;margin-top:16px}
+.mode-badge.demo{background:rgba(245,158,11,.15);color:var(--warn);border:1px solid rgba(245,158,11,.3)}
+.mode-badge.live{background:rgba(16,185,129,.15);color:var(--success);border:1px solid rgba(16,185,129,.3)}
+.existing-users{margin-top:20px;padding:16px;background:var(--panel2);border-radius:12px;border:1px solid var(--border)}
+.existing-users h4{font-size:13px;color:var(--muted);margin-bottom:10px;text-transform:uppercase;letter-spacing:.5px}
+.existing-user{display:flex;align-items:center;gap:10px;padding:8px;border-radius:8px;margin-bottom:6px;background:var(--bg)}
+.existing-user .avatar{width:32px;height:32px;border-radius:50%;background:var(--grad);display:grid;place-items:center;font-size:12px;font-weight:700;color:#fff}
+.existing-user .info{flex:1}.existing-user .info b{font-size:13px;display:block}.existing-user .info small{font-size:11px;color:var(--muted)}
+.existing-user .status{width:8px;height:8px;border-radius:50%;background:var(--success)}.existing-user .status.offline{background:var(--muted)}
+.app{display:grid;grid-template-columns:320px 1fr;height:100dvh}
+.sidebar{background:var(--panel);border-inline-end:1px solid var(--border);display:flex;flex-direction:column;min-height:0}
+.side-head{padding:18px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:12px}
+.side-head .logo{width:42px;height:42px;border-radius:12px;font-size:22px;margin:0}
+.side-head h2{font-size:17px;letter-spacing:-.3px}.side-head small{color:var(--muted);font-size:12px}
+.side-head .spacer{flex:1}
+.users-list{flex:1;overflow-y:auto;padding:12px}
+.user-item{display:flex;align-items:center;gap:12px;padding:12px;border-radius:12px;cursor:pointer;transition:var(--tr);margin-bottom:4px;position:relative}
+.user-item:hover{background:var(--panel2)}
+.user-item.active{background:color-mix(in srgb,var(--accent) 15%,transparent)}
+.user-item.active::before{content:"";position:absolute;inset-inline-start:0;top:20%;height:60%;width:3px;border-radius:9px;background:var(--grad)}
+.user-avatar{width:42px;height:42px;border-radius:50%;background:var(--grad);display:grid;place-items:center;font-weight:700;font-size:16px;color:#fff;flex-shrink:0;position:relative}
+.user-avatar .status{position:absolute;bottom:0;inset-inline-end:0;width:12px;height:12px;border-radius:50%;background:var(--success);border:2px solid var(--panel)}
+.user-avatar .status.offline{background:var(--muted)}
+.user-info{flex:1;min-width:0}.user-info b{font-size:15px;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.user-info small{color:var(--muted);font-size:12px}
+.chat{display:flex;flex-direction:column;min-width:0;min-height:0;background:var(--bg)}
+.chat-head{height:68px;flex:none;display:flex;align-items:center;gap:12px;padding:0 18px;border-bottom:1px solid var(--border);background:color-mix(in srgb,var(--panel) 80%,transparent);backdrop-filter:blur(14px)}
+.chat-head h3{font-size:17px;letter-spacing:-.2px}.chat-head small{color:var(--muted);font-size:12px;display:block;margin-top:2px}
+.chat-head .spacer{flex:1}
+.icon-btn{width:38px;height:38px;border-radius:10px;display:grid;place-items:center;color:var(--muted);transition:var(--tr);font-size:16px}
+.icon-btn:hover{background:var(--panel2);color:var(--text)}
+.menu-btn{display:none}
+.messages{flex:1;min-height:0;overflow-y:auto;padding:20px 18px;display:flex;flex-direction:column;gap:8px;scroll-behavior:smooth}
+.msg{display:flex;gap:10px;max-width:75%;animation:slideIn .3s}
+@keyframes slideIn{from{opacity:0;transform:translateY(8px)}}
+.msg.own{align-self:flex-end;flex-direction:row-reverse}
+.msg .bubble{background:var(--panel2);border:1px solid var(--border);padding:11px 15px;border-radius:16px;font-size:14.5px;line-height:1.6;word-wrap:break-word;overflow-wrap:anywhere}
+.msg.own .bubble{background:var(--grad);border-color:transparent;color:#fff;box-shadow:0 6px 18px rgba(99,102,241,.3)}
+.msg small{font-size:11px;color:var(--muted);margin-top:4px;display:block}
+.msg.own small{color:rgba(255,255,255,.7);text-align:end}
+.composer{flex:none;padding:14px 18px;border-top:1px solid var(--border);background:var(--panel);display:flex;gap:10px;align-items:center}
+.composer input{flex:1;padding:13px 18px;border-radius:24px;background:var(--panel2);border:2px solid var(--border);font-size:14.5px;transition:var(--tr)}
+.composer input:focus{border-color:var(--accent);box-shadow:0 0 0 4px color-mix(in srgb,var(--accent) 18%,transparent)}
+.composer button{width:46px;height:46px;border-radius:50%;background:var(--grad);border:0;color:#fff;cursor:pointer;font-size:18px;transition:var(--tr);box-shadow:0 6px 16px rgba(99,102,241,.4)}
+.composer button:hover{transform:scale(1.08)}.composer button:disabled{opacity:.4;cursor:not-allowed;transform:none}
+.empty{margin:auto;text-align:center;color:var(--muted);padding:40px 20px}
+.empty .big{font-size:56px;margin-bottom:12px}.empty h3{font-size:22px;margin-bottom:8px;color:var(--text)}.empty p{font-size:14px}
+.scrim{display:none}
+.toasts{position:fixed;top:16px;inset-inline-end:16px;z-index:200;display:flex;flex-direction:column;gap:10px}
+.toast{background:var(--panel);border:1px solid var(--border);border-inline-start:3px solid var(--accent);padding:12px 16px;border-radius:12px;font-size:13px;box-shadow:var(--shadow);animation:slideIn .3s;max-width:320px}
+.toast.err{border-inline-start-color:var(--danger)}.toast.ok{border-inline-start-color:var(--success)}
+@media(max-width:768px){.app{grid-template-columns:1fr}.sidebar{position:fixed;inset:0;z-index:10;transform:translateX(100%);transition:transform .3s}html[dir=rtl] .sidebar{transform:translateX(-100%)}.sidebar.open{transform:none!important}.menu-btn{display:grid}.scrim.on{display:block;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:5}.msg{max-width:88%}}
+</style>
+</head>
+<body>
+
+<div class="auth" id="loginScreen">
+  <div class="lang-switch">
+    <button class="lang-btn active" data-lang="ar">العربية</button>
+    <button class="lang-btn" data-lang="en">English</button>
+    <button class="theme-btn" id="themeBtn">🌙</button>
+  </div>
+  <div class="auth-card">
+    <div class="logo">F</div>
+    <div class="brand"><h1>Farhoud Chat</h1><p data-i18n="loginSubtitle"></p></div>
+    <div class="field"><label class="label" data-i18n="username"></label><input class="input" id="loginUsername" placeholder="username" maxlength="20" autocomplete="username"></div>
+    <div class="field"><label class="label" data-i18n="password"></label><input class="input" id="loginPassword" type="password" placeholder="••••••••" maxlength="30" autocomplete="current-password"></div>
+    <button class="btn" id="loginBtn" data-i18n="login"></button>
+    <div class="error" id="loginError"></div>
+    <div class="switch-link"><span data-i18n="noAccount"></span> <a id="goSignup" data-i18n="createAccount"></a></div>
+    <div style="text-align:center"><span class="mode-badge demo" id="modeBadge">DEMO</span></div>
+    <div class="existing-users" id="existingUsersSection"><h4 data-i18n="registeredUsers"></h4><div id="existingUsersList"></div></div>
+    <button class="btn danger hidden" id="clearDataBtn" style="margin-top:16px" data-i18n="clearAllData"></button>
+  </div>
+</div>
+
+<div class="auth hidden" id="signupScreen">
+  <div class="lang-switch">
+    <button class="lang-btn active" data-lang="ar">العربية</button>
+    <button class="lang-btn" data-lang="en">English</button>
+    <button class="theme-btn" id="themeBtn2">🌙</button>
+  </div>
+  <div class="auth-card">
+    <div class="logo">F</div>
+    <div class="brand"><h1>Farhoud Chat</h1><p data-i18n="signupSubtitle"></p></div>
+    <div class="field"><label class="label" data-i18n="username"></label><input class="input" id="signupUsername" placeholder="username" maxlength="20" autocomplete="username"></div>
+    <div class="field"><label class="label" data-i18n="password"></label><input class="input" id="signupPassword" type="password" placeholder="••••••••" maxlength="30" autocomplete="new-password"></div>
+    <div class="field"><label class="label" data-i18n="confirmPassword"></label><input class="input" id="signupConfirm" type="password" placeholder="••••••••" maxlength="30" autocomplete="new-password"></div>
+    <button class="btn" id="signupBtn" data-i18n="signup"></button>
+    <div class="error" id="signupError"></div>
+    <div class="switch-link"><span data-i18n="haveAccount"></span> <a id="goLogin" data-i18n="loginNow"></a></div>
+  </div>
+</div>
+
+<div class="app hidden" id="app">
+  <div class="scrim" id="scrim"></div>
+  <aside class="sidebar" id="sidebar">
+    <div class="side-head">
+      <div class="logo">F</div>
+      <div><h2>Farhoud Chat</h2><small id="myStatus" data-i18n="online"></small></div>
+      <div class="spacer"></div>
+      <button class="icon-btn" id="logoutBtn">🚪</button>
+    </div>
+    <div class="users-list" id="usersList"></div>
+  </aside>
+  <main class="chat">
+    <div class="chat-head">
+      <button class="icon-btn menu-btn" id="menuBtn">☰</button>
+      <div class="user-avatar" id="chatAvatar" style="width:40px;height:40px;font-size:15px"></div>
+      <div style="min-width:0"><h3 id="chatName" data-i18n="selectChat"></h3><small id="chatStatus"></small></div>
+      <div class="spacer"></div>
+      <button class="icon-btn" id="themeBtn3">🌙</button>
+    </div>
+    <div class="messages" id="messages"></div>
+    <div class="composer">
+      <input type="text" id="messageInput" maxlength="1000" data-i18n-placeholder="typeMessage">
+      <button id="sendBtn">➤</button>
+    </div>
+  </main>
+</div>
+
+<div class="toasts" id="toasts"></div>
+
+<script type="module">
+/* ============================================================
+   FARHOUD CHAT — Real-time private messaging (LIVE MODE)
+   ============================================================ */
+const FIREBASE_CONFIG = {
+  apiKey: "AIzaSyACokfeCCP_MVLSHWWbSiyPldI8EYlxiPM",
+  authDomain: "farhood-chat.firebaseapp.com",
+  projectId: "farhood-chat",
+  storageBucket: "farhood-chat.firebasestorage.app",
+  messagingSenderId: "1026531075382",
+  appId: "1:1026531075382:web:b03b6d901768bf8adc7f97"
+};
+
+const LIVE = !!(FIREBASE_CONFIG.apiKey && FIREBASE_CONFIG.projectId);
+const SDK = 'https://www.gstatic.com/firebasejs/11.6.0/';
+
+const I18N = {
+  ar: { loginSubtitle:'تواصل مع أصدقائك فورًا', signupSubtitle:'أنشئ حسابك وابدأ المحادثة', username:'اسم المستخدم', password:'كلمة المرور', confirmPassword:'تأكيد كلمة المرور', login:'تسجيل الدخول', signup:'إنشاء حساب', noAccount:'ليس لديك حساب؟', createAccount:'إنشاء حساب جديد', haveAccount:'لديك حساب بالفعل؟', loginNow:'سجل دخولك الآن', online:'متصل الآن', offline:'غير متصل', selectChat:'اختر محادثة', typeMessage:'اكتب رسالة...', noUsers:'لا يوجد مستخدمين', shareLink:'شارك الرابط مع أصدقائك', startChat:'ابدأ المحادثة', sendFirst:'أرسل رسالة الآن', fillAll:'⚠️ املأ كل الحقول', shortUser:'⚠️ اسم المستخدم قصير جدًا (3 أحرف على الأقل)', shortPass:'⚠️ كلمة المرور قصيرة جدًا (4 أحرف على الأقل)', invalidUser:'⚠️ اسم المستخدم إنجليزي وأرقام فقط (بدون مسافات)', userExists:'⚠️ الاسم موجود بالفعل — جرب اسم آخر', wrongCreds:'⚠️ اسم المستخدم أو كلمة المرور خطأ', passMismatch:'⚠️ كلمتا المرور غير متطابقتين', signupSuccess:'✅ تم إنشاء الحساب بنجاح!', connecting:'جاري الاتصال...', demoMode:'DEMO', liveMode:'LIVE', clearAllData:'🗑 مسح جميع البيانات', dataCleared:'✅ تم مسح جميع البيانات', registeredUsers:'المستخدمين المسجلين:', confirmClear:'هل أنت متأكد؟ سيتم مسح جميع الحسابات والرسائل.', netErr:'⚠️ مشكلة في الاتصال بالإنترنت' },
+  en: { loginSubtitle:'Connect with friends instantly', signupSubtitle:'Create your account and start chatting', username:'Username', password:'Password', confirmPassword:'Confirm Password', login:'Sign In', signup:'Create Account', noAccount:"Don't have an account?", createAccount:'Create new account', haveAccount:'Already have an account?', loginNow:'Sign in now', online:'Online', offline:'Offline', selectChat:'Select a chat', typeMessage:'Type a message...', noUsers:'No users yet', shareLink:'Share the link with friends', startChat:'Start a conversation', sendFirst:'Send a message now', fillAll:'⚠️ Please fill all fields', shortUser:'⚠️ Username too short (min 3 chars)', shortPass:'⚠️ Password too short (min 4 chars)', invalidUser:'⚠️ Username must be English letters and numbers only', userExists:'⚠️ Username already exists — try another', wrongCreds:'⚠️ Wrong username or password', passMismatch:'⚠️ Passwords do not match', signupSuccess:'✅ Account created successfully!', connecting:'Connecting...', demoMode:'DEMO', liveMode:'LIVE', clearAllData:'🗑 Clear All Data', dataCleared:'✅ All data cleared', registeredUsers:'Registered Users:', confirmClear:'Are you sure? All accounts and messages will be deleted.', netErr:'⚠️ Connection error' }
+};
+
+let currentLang = localStorage.getItem('farhoud.lang') || 'ar';
+const t = k => I18N[currentLang][k] || k;
+
+function applyI18n() {
+  document.documentElement.lang = currentLang;
+  document.documentElement.dir = currentLang === 'ar' ? 'rtl' : 'ltr';
+  $$('[data-i18n]').forEach(el => el.textContent = t(el.dataset.i18n));
+  $$('[data-i18n-placeholder]').forEach(el => el.placeholder = t(el.dataset.i18nPlaceholder));
+  $$('.lang-btn').forEach(b => b.classList.toggle('active', b.dataset.lang === currentLang));
+  document.body.style.fontFamily = currentLang === 'en' ? "'Inter','Tajawal',sans-serif" : "'Tajawal','Inter',sans-serif";
+}
+
+const $ = s => document.querySelector(s);
+const $$ = s => [...document.querySelectorAll(s)];
+const esc = s => String(s||'').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const now = () => Date.now();
+const toast = (msg, type='') => { const el=document.createElement('div'); el.className='toast '+type; el.textContent=msg; $('#toasts').append(el); setTimeout(()=>{el.style.opacity=0;setTimeout(()=>el.remove(),300)},3500); };
+
+let api, currentUser, chatPartner, unsubMessages=null, unsubUsers=null, usersCache={};
+
+/* ============ DEMO MODE ============ */
+function makeDemo(){
+  const KEY='farhoud.users.v3', MSGS='farhood.messages.v3';
+  let users=JSON.parse(localStorage.getItem(KEY)||'{}'), messages=JSON.parse(localStorage.getItem(MSGS)||'{}');
+  const listeners=new Set();
+  const save=()=>{localStorage.setItem(KEY,JSON.stringify(users));listeners.forEach(fn=>fn(users))};
+  const getChatId=(a,b)=>[a,b].sort().join('_');
+  return { mode:'demo',
+    async signup(username,password){const l=username.toLowerCase();if(users[l])throw new Error(t('userExists'));if(username.length<3)throw new Error(t('shortUser'));if(password.length<4)throw new Error(t('shortPass'));if(!/^[a-zA-Z0-9_]+$/.test(username))throw new Error(t('invalidUser'));const uid=Math.random().toString(36).slice(2)+now();users[l]={uid,username:l,password,online:true,lastSeen:now()};save();return{uid,username:l}},
+    async login(username,password){const l=username.toLowerCase();const u=users[l];if(!u||u.password!==password)throw new Error(t('wrongCreds'));u.online=true;u.lastSeen=now();save();return{uid:u.uid,username:l}},
+    onUsers(fn){listeners.add(fn);fn(users);return()=>listeners.delete(fn)},
+    onMessages(chatId,fn){const iv=setInterval(()=>fn(JSON.parse(localStorage.getItem(MSGS)||'{}')[chatId]||[]),500);fn(messages[chatId]||[]);return()=>clearInterval(iv)},
+    async sendMessage(toUid,text){const cid=getChatId(currentUser.uid,toUid);const m=JSON.parse(localStorage.getItem(MSGS)||'{}');(m[cid]=m[cid]||[]).push({id:Math.random().toString(36).slice(2),from:currentUser.uid,to:toUid,text,timestamp:now()});localStorage.setItem(MSGS,JSON.stringify(m))},
+    async setTyping(){}, async setOnline(o){const u=Object.values(users).find(x=>x.uid===currentUser.uid);if(u){u.online=o;u.lastSeen=now();save()}},
+    clearAllData(){localStorage.removeItem(KEY);localStorage.removeItem(MSGS);users={};messages={};listeners.forEach(fn=>fn(users))},
+    getUsers(){return users}
+  };
+}
+
+/* ============ FIREBASE MODE ============ */
+async function makeFirebase(){
+  const [App,A,F]=await Promise.all([import(SDK+'firebase-app.js'),import(SDK+'firebase-auth.js'),import(SDK+'firebase-firestore.js')]);
+  const app=App.initializeApp(FIREBASE_CONFIG);
+  const auth=A.getAuth(app), db=F.getFirestore(app);
+  await A.setPersistence(auth,A.browserLocalPersistence);
+  const email=u=>u+'@farhoud.chat';
+  const ms=v=>v?.toMillis?v.toMillis():Number(v)||now();
+  const getChatId=(a,b)=>[a,b].sort().join('_');
+  return { mode:'live',
+    async signup(username,password){
+      const l=username.toLowerCase();
+      if(l.length<3)throw new Error(t('shortUser'));
+      if(password.length<4)throw new Error(t('shortPass'));
+      if(!/^[a-zA-Z0-9_]+$/.test(username))throw new Error(t('invalidUser'));
+      const uDoc=await F.getDoc(F.doc(db,'usernames',l));
+      if(uDoc.exists())throw new Error(t('userExists'));
+      let cred;
+      try{cred=await A.createUserWithEmailAndPassword(auth,email(l),password)}
+      catch(e){if(e.code==='auth/email-already-in-use')throw new Error(t('userExists'));throw e}
+      await F.setDoc(F.doc(db,'users',cred.user.uid),{uid:cred.user.uid,username:l,online:true,lastSeen:F.serverTimestamp(),createdAt:F.serverTimestamp()});
+      await F.setDoc(F.doc(db,'usernames',l),{uid:cred.user.uid});
+      return{uid:cred.user.uid,username:l};
+    },
+    async login(username,password){
+      const l=username.toLowerCase();
+      let cred;
+      try{cred=await A.signInWithEmailAndPassword(auth,email(l),password)}
+      catch(e){throw new Error(t('wrongCreds'))}
+      await F.setDoc(F.doc(db,'users',cred.user.uid),{online:true,lastSeen:F.serverTimestamp()},{merge:true});
+      return{uid:cred.user.uid,username:l};
+    },
+    onUsers(fn){return F.onSnapshot(F.query(F.collection(db,'users'),F.limit(100)),s=>fn(s.docs.map(d=>({id:d.id,...d.data(),lastSeen:ms(d.data().lastSeen)}))),e=>console.warn(e))},
+    onMessages(chatId,fn){return F.onSnapshot(F.query(F.collection(db,'chats',chatId,'messages'),F.orderBy('timestamp','asc'),F.limit(200)),s=>fn(s.docs.map(d=>{const x=d.data();return{id:d.id,from:x.from,to:x.to,text:x.text,timestamp:ms(x.timestamp)}})),e=>console.warn(e))},
+    async sendMessage(toUid,text){const cid=getChatId(currentUser.uid,toUid);await F.addDoc(F.collection(db,'chats',cid,'messages'),{from:currentUser.uid,to:toUid,text,timestamp:F.serverTimestamp()})},
+    async setTyping(){},
+    async setOnline(o){await F.updateDoc(F.doc(db,'users',currentUser.uid),{online:o,lastSeen:F.serverTimestamp()}).catch(()=>{})},
+    clearAllData(){toast('مسح البيانات من Firebase Console','err')},
+    getUsers(){return{}}
+  };
+}
+
+/* ============ UI ============ */
+function showLogin(){$('#loginScreen').classList.remove('hidden');$('#signupScreen').classList.add('hidden');$('#app').classList.add('hidden');renderExistingUsers()}
+function showSignup(){$('#signupScreen').classList.remove('hidden');$('#loginScreen').classList.add('hidden');$('#app').classList.add('hidden')}
+function showApp(){$('#loginScreen').classList.add('hidden');$('#signupScreen').classList.add('hidden');$('#app').classList.remove('hidden')}
+
+function renderExistingUsers(){
+  if(LIVE){$('#existingUsersSection').classList.add('hidden');$('#clearDataBtn').classList.add('hidden');return}
+  $('#clearDataBtn').classList.remove('hidden');
+  const list=Object.values(api.getUsers());
+  $('#existingUsersList').innerHTML=list.length?list.map(u=>`<div class="existing-user"><div class="avatar">${u.username[0].toUpperCase()}</div><div class="info"><b>${esc(u.username)}</b><small>${u.online?t('online'):t('offline')}</small></div><div class="status ${u.online?'':'offline'}"></div></div>`).join(''):`<p style="color:var(--muted);font-size:12px;text-align:center">${t('noUsers')}</p>`;
+}
+
+function renderUsers(usersList){
+  usersCache=usersList;
+  const others=Object.values(usersList).filter(u=>u.uid!==currentUser.uid);
+  const c=$('#usersList');
+  if(!others.length){c.innerHTML=`<div class="empty"><div class="big">👥</div><h3>${t('noUsers')}</h3><p>${t('shareLink')}</p></div>`;return}
+  c.innerHTML=others.map(u=>`<div class="user-item ${chatPartner&&chatPartner.uid===u.uid?'active':''}" data-uid="${u.uid}"><div class="user-avatar">${u.username[0].toUpperCase()}<div class="status ${u.online?'':'offline'}"></div></div><div class="user-info"><b>${esc(u.username)}</b><small>${u.online?t('online'):getTimeAgo(u.lastSeen)}</small></div></div>`).join('');
+  c.onclick=e=>{const it=e.target.closest('.user-item');if(!it)return;const p=Object.values(usersList).find(u=>u.uid===it.dataset.uid);if(p)openChat(p)};
+}
+
+function openChat(partner){
+  chatPartner=partner;
+  $('#chatAvatar').textContent=partner.username[0].toUpperCase();
+  $('#chatName').textContent=partner.username;
+  $('#chatStatus').textContent=partner.online?t('online'):getTimeAgo(partner.lastSeen);
+  if(window.innerWidth<=768){$('#sidebar').classList.remove('open');$('#scrim').classList.remove('on')}
+  loadMessages();
+}
+
+function loadMessages(){
+  if(!chatPartner)return;
+  const cid=[currentUser.uid,chatPartner.uid].sort().join('_');
+  unsubMessages?.();
+  unsubMessages=api.onMessages(cid,msgs=>{
+    const c=$('#messages');
+    if(!msgs.length){c.innerHTML=`<div class="empty"><div class="big">💬</div><h3>${t('startChat')}</h3><p>${t('sendFirst')}</p></div>`;return}
+    c.innerHTML=msgs.map(m=>`<div class="msg ${m.from===currentUser.uid?'own':''}"><div class="bubble">${esc(m.text)}<small>${new Date(m.timestamp||now()).toLocaleTimeString(currentLang==='ar'?'ar-EG':'en-US',{hour:'2-digit',minute:'2-digit'})}</small></div></div>`).join('');
+    c.scrollTop=c.scrollHeight;
+  });
+}
+
+function getTimeAgo(ts){
+  if(!ts)return '—';
+  const s=Math.floor((now()-ts)/1000);
+  if(s<60)return currentLang==='ar'?'منذ قليل':'just now';
+  const m=Math.floor(s/60); if(m<60)return currentLang==='ar'?`منذ ${m} دقيقة`:`${m}m ago`;
+  const h=Math.floor(m/60); if(h<24)return currentLang==='ar'?`منذ ${h} ساعة`:`${h}h ago`;
+  const d=Math.floor(h/24); return currentLang==='ar'?`منذ ${d} يوم`:`${d}d ago`;
+}
+
+/* ============ EVENTS ============ */
+$$('.lang-btn').forEach(b=>b.onclick=()=>{currentLang=b.dataset.lang;localStorage.setItem('farhoud.lang',currentLang);applyI18n();currentUser?renderUsers(usersCache):renderExistingUsers()});
+$$('.theme-btn,#themeBtn3').forEach(b=>b.onclick=()=>{const d=document.documentElement.dataset.theme!=='light';document.documentElement.dataset.theme=d?'light':'dark';localStorage.setItem('farhoud.theme',d?'light':'dark');$$('.theme-btn,#themeBtn3').forEach(x=>x.textContent=d?'☀️':'🌙')});
+$('#goSignup').onclick=()=>{$('#loginError').textContent='';showSignup()};
+$('#goLogin').onclick=()=>{$('#signupError').textContent='';showLogin()};
+
+async function afterAuth(user){
+  currentUser=user; showApp();
+  unsubUsers?.();
+  unsubUsers=api.onUsers(renderUsers);
+  api.setOnline(true);
+}
+
+$('#loginBtn').onclick=async()=>{
+  const u=$('#loginUsername').value.trim().toLowerCase(), p=$('#loginPassword').value, e=$('#loginError');
+  if(!u||!p){e.textContent=t('fillAll');return}
+  $('#loginBtn').disabled=true;$('#loginBtn').textContent=t('connecting');e.textContent='';
+  try{await afterAuth(await api.login(u,p));toast(t('online'),'ok')}
+  catch(err){e.textContent=err.message||t('netErr')}
+  finally{$('#loginBtn').disabled=false;$('#loginBtn').textContent=t('login')}
+};
+
+$('#signupBtn').onclick=async()=>{
+  const u=$('#signupUsername').value.trim().toLowerCase(), p=$('#signupPassword').value, c=$('#signupConfirm').value, e=$('#signupError');
+  if(!u||!p||!c){e.textContent=t('fillAll');return}
+  if(p!==c){e.textContent=t('passMismatch');return}
+  $('#signupBtn').disabled=true;$('#signupBtn').textContent=t('connecting');e.textContent='';
+  try{await afterAuth(await api.signup(u,p));toast(t('signupSuccess'),'ok')}
+  catch(err){e.textContent=err.message||t('netErr')}
+  finally{$('#signupBtn').disabled=false;$('#signupBtn').textContent=t('signup')}
+};
+
+$('#loginUsername').onkeydown=e=>{if(e.key==='Enter')$('#loginPassword').focus()};
+$('#loginPassword').onkeydown=e=>{if(e.key==='Enter')$('#loginBtn').click()};
+$('#signupUsername').onkeydown=e=>{if(e.key==='Enter')$('#signupPassword').focus()};
+$('#signupPassword').onkeydown=e=>{if(e.key==='Enter')$('#signupConfirm').focus()};
+$('#signupConfirm').onkeydown=e=>{if(e.key==='Enter')$('#signupBtn').click()};
+
+$('#sendBtn').onclick=async()=>{
+  const i=$('#messageInput'), txt=i.value.trim();
+  if(!txt||!chatPartner)return;
+  i.value='';$('#sendBtn').disabled=true;
+  try{await api.sendMessage(chatPartner.uid,txt)}catch(e){toast(e.message,'err')}
+  finally{$('#sendBtn').disabled=false;i.focus()}
+};
+$('#messageInput').onkeydown=e=>{if(e.key==='Enter'){e.preventDefault();$('#sendBtn').click()}};
+
+$('#logoutBtn').onclick=async()=>{if(currentUser)await api.setOnline(false);currentUser=null;chatPartner=null;unsubMessages?.();unsubUsers?.();showLogin()};
+$('#menuBtn').onclick=()=>{$('#sidebar').classList.add('open');$('#scrim').classList.add('on')};
+$('#scrim').onclick=()=>{$('#sidebar').classList.remove('open');$('#scrim').classList.remove('on')};
+$('#clearDataBtn').onclick=()=>{if(confirm(t('confirmClear'))){api.clearAllData();toast(t('dataCleared'),'ok');renderExistingUsers()}};
+window.onbeforeunload=()=>{if(currentUser)api.setOnline(false)};
+
+/* ============ BOOT ============ */
+(async function boot(){
+  const th=localStorage.getItem('farhood.theme');
+  if(th){document.documentElement.dataset.theme=th;$$('.theme-btn,#themeBtn3').forEach(b=>b.textContent=th==='light'?'☀️':'🌙')}
+  applyI18n();
+  $('#modeBadge').textContent=LIVE?t('liveMode'):t('demoMode');
+  $('#modeBadge').className='mode-badge '+(LIVE?'live':'demo');
+  try{api=LIVE?await makeFirebase():makeDemo()}
+  catch(e){console.error(e);toast(t('netErr'),'err');api=makeDemo()}
+  showLogin();
+})();
+</script>
+</body>
+</html>
